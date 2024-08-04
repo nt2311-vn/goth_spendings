@@ -12,3 +12,6 @@ static/css/tailwind.css
 
 # node_modules
 node_modules/
+
+# tmp file
+tmp/
