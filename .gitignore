@@ -4,6 +4,9 @@
 # Templ files
 *templ.go
 
+# Executable
+bin/
+
 # Tailwindcss
 static/css/tailwind.css
 
