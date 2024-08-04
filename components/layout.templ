@@ -1,0 +1,18 @@
+package components
+
+templ Layout(children ...templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>The Spendings App</title>
+			<link rel="stylesheet" href="/static/css/tailwind.css"/>
+		</head>
+		<body>
+			for _, child := range children {
+				@child
+			}
+		</body>
+	</html>
+}
