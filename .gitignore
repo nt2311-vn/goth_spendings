@@ -1,0 +1,11 @@
+# Env file
+.env
+
+# Templ files
+*templ.go
+
+# Tailwindcss
+static/css/tailwind.css
+
+# node_modules
+node_modules/
