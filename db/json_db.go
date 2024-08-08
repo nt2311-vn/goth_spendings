@@ -5,8 +5,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
+	"slices"
 	"sync"
 	"time"
 )
@@ -33,6 +35,13 @@ func init() {
 			panic(err)
 		}
 	}
+}
+
+func generateId() string {
+	sha256 := sha256.New()
+	sha256.Write([]byte(time.Now().String()))
+
+	return hex.EncodeToString(sha256.Sum(nil))
 }
 
 func (s *storeManager) get() (storeSchema, error) {
@@ -85,13 +94,6 @@ func NewSpendingStoreJson() SpendingsStore {
 	return &SpendingsStoreJson{}
 }
 
-func generateId() string {
-	sha256 := sha256.New()
-	sha256.Write([]byte(time.Now().String()))
-
-	return hex.EncodeToString(sha256.Sum(nil))
-}
-
 func (s *SpendingsStoreJson) Insert(spending Spending) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -115,13 +117,41 @@ func (s *SpendingsStoreJson) Insert(spending Spending) error {
 func (s *SpendingsStoreJson) GetAll() ([]Spending, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	panic("not implemented")
+	store, err := jsonMgr.get()
+	if err != nil {
+		return nil, err
+	}
+
+	return store.Spedings, nil
 }
 
 func (s *SpendingsStoreJson) Update(id string, values Spending) error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	panic("not implemented")
+
+	store, err := jsonMgr.get()
+	if err != nil {
+		return err
+	}
+
+	idx := slices.IndexFunc(store.Spedings, func(s Spending) bool {
+		return s.Id == id
+	})
+
+	if idx == -1 {
+		return fmt.Errorf("Item was not found")
+	}
+
+	store.Balance += store.Spedings[idx].Price
+	store.Balance -= values.Price
+
+	store.Spedings[idx] = values
+	err = jsonMgr.set(store)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *SpendingsStoreJson) Delete(id string) error {
