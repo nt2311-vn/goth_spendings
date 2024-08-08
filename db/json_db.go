@@ -157,7 +157,29 @@ func (s *SpendingsStoreJson) Update(id string, values Spending) error {
 func (s *SpendingsStoreJson) Delete(id string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	panic("not implemented")
+
+	store, err := jsonMgr.get()
+	if err != nil {
+		return err
+	}
+
+	idx := slices.IndexFunc(store.Spedings, func(s Spending) bool {
+		return s.Id == id
+	})
+
+	if idx == -1 {
+		return fmt.Errorf("Item was not found")
+	}
+
+	store.Balance += store.Spedings[idx].Price
+	store.Spedings = append(store.Spedings[:idx], store.Spedings[idx+1:]...)
+
+	err = jsonMgr.set(store)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 type BalanceStoreJson struct {
