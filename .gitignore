@@ -15,3 +15,6 @@ node_modules/
 
 # tmp file
 tmp/
+
+# ignore database
+db.json
