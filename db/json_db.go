@@ -193,11 +193,27 @@ func NewBalanceStoreJson() BalanceStore {
 func (b *BalanceStoreJson) GetBalance() int64 {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
-	panic("not implemented")
+	store, err := jsonMgr.get()
+	if err != nil {
+		return 0
+	}
+
+	return store.Balance
 }
 
-func (b *BalanceStoreJson) SetBalance(_ int64) error {
+func (b *BalanceStoreJson) SetBalance(newBalance int64) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	panic("not implemented")
+	store, err := jsonMgr.get()
+	if err != nil {
+		return err
+	}
+	store.Balance = newBalance
+
+	err = jsonMgr.set(store)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
