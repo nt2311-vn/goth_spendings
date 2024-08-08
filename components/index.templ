@@ -1,9 +1,27 @@
 package components
 
-templ main() {
-	<main>Something in main</main>
+import (
+	"fmt"
+	"github.com/nt2311-vn/goth_spendings/db"
+)
+
+templ main(b int64, s []db.Spending) {
+	<main class="w-full h-screen bg-pink-100">
+		@Balance(b)
+		@Spendings(s)
+	</main>
 }
 
-templ Index() {
-	@Layout(main())
+templ Index(balance int64, spending []db.Spending) {
+	<main class="w-full h-screen bg-pink-100">
+		@Layout(Balance(balance))
+	</main>
+}
+
+templ Balance(b int64) {
+	<section class="w-full pt-5">
+		<div class="m-auto w-fit py-3 px-12 border border-red-300 rounded-lg">
+			<span class="text-xl">Current Balance: <b>{ fmt.Sprint(b) }</b></span>
+		</div>
+	</section>
 }
