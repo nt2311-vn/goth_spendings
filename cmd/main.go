@@ -15,8 +15,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
+
 	r := chi.NewRouter()
 	r.Get("/greet", handlers.Make(handlers.HandleGreet))
+	r.Get("/", handlers.Make(handlers.HomePage))
 
 	listenAddr := os.Getenv("LISTEN_ADDR")
 	slog.Info("HTTP server started", "listenAddr", listenAddr)
