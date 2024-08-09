@@ -1,6 +1,10 @@
+BINARY_NAME=spendings
+ifeq ($(OS),Windows_NT)
+	BINARY_NAME=spendings.exe
+endif
+
 .PHONY: build
 
-BINARY_NAME=spendings
 
 build:
 	go mod tidy && \
