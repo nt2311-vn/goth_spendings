@@ -5,9 +5,15 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/nt2311-vn/goth_spendings/services"
 )
 
 type HTTPHandler func(w http.ResponseWriter, r *http.Request) error
+
+type Handlers struct {
+	SpendingService *services.SpendingService
+	BalanceService  *services.BalanceService
+}
 
 func Make(h HTTPHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
