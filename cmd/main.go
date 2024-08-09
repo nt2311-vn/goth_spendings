@@ -8,7 +8,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/nt2311-vn/goth_spendings/db"
 	"github.com/nt2311-vn/goth_spendings/handlers"
+	"github.com/nt2311-vn/goth_spendings/services"
 )
 
 func main() {
@@ -16,9 +18,23 @@ func main() {
 		log.Fatal(err)
 	}
 
+	balanceStore := db.NewBalanceStoreJson()
+	spendingStore := db.NewSpendingStoreJson()
+	balanceService := services.NewBalanceService(balanceStore)
+	spendingService := services.NewSpendingService(spendingStore)
+
+	h := &handlers.Handlers{
+		SpendingService: spendingService,
+		BalanceService:  balanceService,
+	}
+
+	spendingHandler := handlers.NewSpendingHandler(*spendingService)
+
 	r := chi.NewRouter()
 	r.Get("/greet", handlers.Make(handlers.HandleGreet))
-	r.Get("/", handlers.Make(handlers.HomePage))
+	r.Get("/", handlers.Make(h.HomePage))
+
+	r.Post("/spending/add", spendingHandler.HandleAddSpendingItem)
 
 	listenAddr := os.Getenv("LISTEN_ADDR")
 	slog.Info("HTTP server started", "listenAddr", listenAddr)
