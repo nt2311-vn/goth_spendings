@@ -104,7 +104,7 @@ func (s *SpendingsStoreJson) Insert(spending Spending) error {
 
 	spending.Id = generateId()
 	store.Spedings = append(store.Spedings, spending)
-	store.Balance = spending.Price
+	store.Balance += spending.Price
 
 	err = jsonMgr.set(store)
 	if err != nil {
