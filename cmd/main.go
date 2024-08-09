@@ -31,8 +31,10 @@ func main() {
 	spendingHandler := handlers.NewSpendingHandler(*spendingService)
 
 	r := chi.NewRouter()
-	r.Get("/greet", handlers.Make(handlers.HandleGreet))
 	r.Get("/", handlers.Make(h.HomePage))
+	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	r.Get("/greet", handlers.Make(handlers.HandleGreet))
 
 	r.Post("/spending/add", spendingHandler.HandleAddSpendingItem)
 
