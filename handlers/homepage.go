@@ -5,17 +5,10 @@ import (
 	"net/http"
 
 	"github.com/nt2311-vn/goth_spendings/components"
-	"github.com/nt2311-vn/goth_spendings/db"
-	"github.com/nt2311-vn/goth_spendings/services"
 )
 
-func HomePage(w http.ResponseWriter, r *http.Request) error {
-	balanceStore := db.NewBalanceStoreJson()
-	spendingStore := db.NewSpendingStoreJson()
-	balanceService := services.NewBalanceService(balanceStore)
-	spendingService := services.NewSpendingService(spendingStore)
-
-	spendings, err := spendingService.ListItems()
+func (h *Handlers) HomePage(w http.ResponseWriter, r *http.Request) error {
+	spendings, err := h.SpendingService.ListItems()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return fmt.Errorf("Cannot list item on spendings")
@@ -24,9 +17,8 @@ func HomePage(w http.ResponseWriter, r *http.Request) error {
 	w.Header().Set("Content-Type", "text/html")
 
 	return Render(
-
 		w,
 		r,
-		components.Index(balanceService.GetBalance(), spendings),
+		components.Index(h.BalanceService.GetBalance(), spendings),
 	)
 }
