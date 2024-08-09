@@ -34,9 +34,9 @@ func main() {
 	r.Get("/", handlers.Make(h.HomePage))
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	r.Get("/greet", handlers.Make(handlers.HandleGreet))
-
 	r.Post("/spending/add", spendingHandler.HandleAddSpendingItem)
+	r.Put("/spending", spendingHandler.HandleUpdateSpendingItem)
+	r.Delete("/spending", spendingHandler.HandleRemoveSpendingItem)
 
 	listenAddr := os.Getenv("LISTEN_ADDR")
 	slog.Info("HTTP server started", "listenAddr", listenAddr)
