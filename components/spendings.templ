@@ -24,6 +24,7 @@ templ newSpending() {
 templ Spendings(spendings []db.Spending) {
 	<section class="w-full pt-5"></section>
 	<div class="m-auto w-fit flex flex-col gap-2">
+		@newSpending()
 		for _, s:= range spendings {
 			<div
 				class={ "rounded-md p-2 min-w-[400px] ", templ.KV("bg-green-400", s.Price > 0), templ.KV("bg-red-400", s.Price > 0) }
@@ -35,7 +36,10 @@ templ Spendings(spendings []db.Spending) {
 					</div>
 					<span>{ s.SpentAt.Format("01-Feb-2006") }</span>
 				</div>
-				<div class="float-right">
+				<div
+					class="float-right"
+					hx-delete={ fmt.Sprintf("/api/spending?id=%s", s.Id) }
+				>
 					<button class="font-bold uppercase bg-purple-300 hover:bg-white py-1 px-4 rounded-xl border-purple-300">Delete</button>
 					<button class="font-bold uppercase bg-blue-300 hover:bg-white py-1 px-4 rounded-xl border-purple-300">Update</button>
 				</div>
