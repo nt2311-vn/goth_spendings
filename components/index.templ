@@ -15,6 +15,7 @@ templ main(b int64, s []db.Spending) {
 templ Index(balance int64, spending []db.Spending) {
 	<main class="w-full h-screen bg-pink-100">
 		@Layout(Balance(balance))
+		@Spendings(spending)
 	</main>
 }
 
